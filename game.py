@@ -2,6 +2,10 @@
 
 # Replace RPG starter project with this code when new instructions are live
 
+from audioop import add
+from webbrowser import get
+
+
 def showInstructions():
     # print a main menu and the commands
     print('''
@@ -35,25 +39,39 @@ rooms = {
     'Hall': {
         'south': 'Kitchen',
         'east': 'Dining Room',
-        'item': 'key'
+        'north': 'Apothecary',
+        'west': 'Dark Bedroom',
+        'item': 'bronze-key'
     },
-
     'Kitchen': {
         'north': 'Hall',
+        'south': 'Closet',
         'item': 'monster',
     },
     'Dining Room': {
         'west': 'Hall',
         'south': 'Garden',
-        'item': 'potion',
+        'item': 'vanilla-extract',
         'north': 'Pantry',
     },
     'Garden': {
-        'north': 'Dining Room'
+        'north': 'Dining Room',
+        'item': 'gold-extract',
     },
     'Pantry': {
         'south': 'Dining Room',
-        'item': 'cookie',
+        'item': 'mercury-extract',
+    },
+    'Apothecary': {
+        'south': 'Hall',
+        'item': 'stoneskin-extract',
+    },
+    'Closet': {
+        'north': 'Kitchen',
+        'item': 'silver-key'
+    },
+    'Dark Bedroom': {
+        'east': 'Hall',
     }
 }
 
@@ -105,11 +123,21 @@ while True:
             print('Can\'t get ' + move[1] + '!')
 
     # Define how a player can win
-    if currentRoom == 'Garden' and 'key' in inventory and 'potion' in inventory:
-        print('You escaped the house with the ultra rare key and magic potion... YOU WIN!')
+    if currentRoom == 'Garden' and 'bronze-key' in inventory and 'silver-key' in inventory and 'gold-key' in inventory:
+        print('Using the 3 keys you found you escaped the house safely')
         break
 
     # If a player enters a room with a monster
     elif 'item' in rooms[currentRoom] and 'monster' in rooms[currentRoom]['item']:
-        print('A monster has got you... GAME OVER!')
-        break
+        if 'stoneskin-extract' in inventory:
+            print(
+                'A monster charges you, your stonskin-extract stops the moster in its tracks and knocks it out')
+        else:
+            print('A monster tramples you, you die. GAME OVER')
+            break
+
+    if currentRoom == 'Dark Bedroom' and 'gold-extract' in inventory:
+        print('Your gold-extract detects a gold-key under the floorboard, you take it')
+        inventory.append('gold-key')
+    elif currentRoom == 'Dark Bedroom':
+        print('You dont see anything of interest in here')
